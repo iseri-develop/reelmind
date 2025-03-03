@@ -4,13 +4,18 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ripplecode.reelmind.data.repository.MovieRepository
+import com.ripplecode.reelmind.data.store.UserPreferencesDataStore
 import com.ripplecode.reelmind.domain.model.Movie
 import com.ripplecode.reelmind.domain.model.MovieDetail
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class HomeViewModel(private val repository: MovieRepository) : ViewModel() {
+class HomeViewModel(
+    private val repository: MovieRepository,
+    private val userPreferencesDataStore: UserPreferencesDataStore
+) : ViewModel() {
+
     private val _movies = MutableStateFlow<List<Movie>>(emptyList())
     val movies: StateFlow<List<Movie>> = _movies
 
@@ -18,16 +23,22 @@ class HomeViewModel(private val repository: MovieRepository) : ViewModel() {
     val searchResults: StateFlow<List<Movie>> = _searchResults
 
     init {
-        fetchPopularMovies()
+        fetchMoviesByUserPreferences()
     }
 
-    private fun fetchPopularMovies() {
+    private fun fetchMoviesByUserPreferences() {
         viewModelScope.launch {
             try {
-                val response = repository.getPopularMovies()
-                _movies.value = response
+                userPreferencesDataStore.favoriteGenres.collect { genres ->
+                    if (genres.isEmpty()) {
+                        _movies.value = repository.getPopularMovies()
+                    } else {
+                        val genreIds = genres.joinToString(",") { getGenreIdByName(it) }
+                        _movies.value = repository.getMoviesByGenres(genreIds)
+                    }
+                }
             } catch (e: Exception) {
-                Log.e("MovieViewModel", "Erro ao carregar filmes: ${e.message}")
+                Log.e("HomeViewModel", "Erro ao carregar filmes: ${e.message}")
             }
         }
     }
@@ -36,5 +47,16 @@ class HomeViewModel(private val repository: MovieRepository) : ViewModel() {
         viewModelScope.launch {
             _searchResults.value = repository.searchMovies(query)
         }
+    }
+
+    private fun getGenreIdByName(genreName: String): String {
+        val genreMap = mapOf(
+            "Ação" to "28",
+            "Comédia" to "35",
+            "Drama" to "18",
+            "Terror" to "27",
+            "Ficção Científica" to "878"
+        )
+        return genreMap[genreName] ?: ""
     }
 }

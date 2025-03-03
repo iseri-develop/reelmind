@@ -14,10 +14,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -32,9 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.ripplecode.reelmind.R
 import com.ripplecode.reelmind.domain.model.Movie
@@ -45,6 +45,7 @@ import org.koin.androidx.compose.koinViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
+    genres: Set<String>,
     viewModel: HomeViewModel = koinViewModel(),
     detailViewModel: DetailViewModel = koinViewModel(),
     onMovieClick: (Movie) -> Unit
@@ -53,6 +54,21 @@ fun HomeScreen(
     val searchResults by viewModel.searchResults.collectAsState() // Lista de filmes buscados
     var searchQuery by remember { mutableStateOf("") }
     var selectedMovieId by remember { mutableStateOf<Int?>(null) }
+
+    // Mapeia os nomes dos gêneros para IDs (precisamos ter essa correspondência)
+    val genreIdMap = mapOf(
+        "Ação" to 28,
+        "Comédia" to 35,
+        "Drama" to 18,
+        "Terror" to 27,
+        "Ficção Científica" to 878
+    )
+
+    val selectedGenreIds = genres.mapNotNull { genreIdMap[it] }.toSet()
+
+    val filteredMovies = movies.filter { movie ->
+        movie.genreIds.any { it in selectedGenreIds }
+    }
 
     Scaffold(
         topBar = {
@@ -73,6 +89,19 @@ fun HomeScreen(
                     singleLine = true,
                     leadingIcon = {
                         Icon(imageVector = Icons.Default.Search, contentDescription = "Buscar")
+                    },
+                    trailingIcon = {
+                        if (searchQuery.isNotEmpty()) {
+                            IconButton(onClick = {
+                                searchQuery = ""  // Limpa o campo de busca
+                                viewModel.searchMovies("") // Reseta os resultados da busca
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Default.Close,
+                                    contentDescription = "Limpar busca"
+                                )
+                            }
+                        }
                     }
                 )
             }
@@ -82,7 +111,7 @@ fun HomeScreen(
             contentPadding = paddingValues,
             modifier = Modifier.fillMaxSize()
         ) {
-            val listToShow = if (searchQuery.isEmpty()) movies else searchResults
+            val listToShow = if (searchQuery.isEmpty()) filteredMovies else searchResults
 
             items(listToShow) { movie ->
                 MovieItem(movie = movie, onMovieClick = {
@@ -101,6 +130,7 @@ fun HomeScreen(
         )
     }
 }
+
 
 @Composable
 fun MovieItem(movie: Movie, onMovieClick: (Movie) -> Unit) {
@@ -141,10 +171,4 @@ fun MovieItem(movie: Movie, onMovieClick: (Movie) -> Unit) {
             }
         }
     }
-}
-
-@Composable
-@Preview
-fun HomeScreenPreview() {
-    HomeScreen(onMovieClick = {})
 }

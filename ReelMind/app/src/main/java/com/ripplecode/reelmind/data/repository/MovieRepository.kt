@@ -9,6 +9,10 @@ class MovieRepository(private val apiService: ApiService) {
         return apiService.getPopularMovies().results
     }
 
+    suspend fun getMoviesByGenres(genreIds: String): List<Movie> {
+        return apiService.getMoviesByGenres(genreIds).results
+    }
+
     suspend fun getMovieDetail(movieId: Int): MovieDetail {
         return apiService.getMovieDetail(movieId)
     }

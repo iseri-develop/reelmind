@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "946160521970",
+    "project_id": "reelmind-84bf7",
+    "storage_bucket": "reelmind-84bf7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:946160521970:android:7e6fb3faf35ed2c3e2766b",
+        "android_client_info": {
+          "package_name": "com.ripplecode.reelmind"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBIV2z4IK8OYyQWc-Kq2Fw80MhPZm5SLrw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

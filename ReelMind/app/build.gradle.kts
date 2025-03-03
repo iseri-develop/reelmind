@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("com.google.devtools.ksp")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -59,6 +60,11 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
 
+    //firebase
+    implementation(libs.play.services.auth)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+
     // Retrofit + Gson para consumir API de filmes
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
@@ -66,6 +72,8 @@ dependencies {
 
     // Room para armazenar favoritos
     implementation(libs.androidx.room.runtime)
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.play.services.auth)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
 
