@@ -61,9 +61,17 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
 
     //firebase
-    implementation(libs.play.services.auth)
+    // Import the BoM for the Firebase platform
     implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.analytics)
+
+    // Add the dependency for the Firebase Authentication library
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation(libs.firebase.auth)
+
+    // Also add the dependencies for the Credential Manager libraries and specify their versions
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.googleid)
 
     // Retrofit + Gson para consumir API de filmes
     implementation(libs.retrofit)

@@ -2,6 +2,7 @@ package com.ripplecode.reelmind
 
 import android.app.Application
 import com.ripplecode.reelmind.di.appModule
+import com.ripplecode.reelmind.di.databaseModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext.startKoin
 
@@ -12,7 +13,9 @@ class MainApplication : Application() {
         // Inicializa o Koin
         startKoin {
             androidContext(this@MainApplication)
-            modules(appModule)
+            modules(
+                appModule,
+                databaseModule)
         }
     }
 }

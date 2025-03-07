@@ -5,11 +5,24 @@ import com.ripplecode.reelmind.data.remote.ApiService
 import com.ripplecode.reelmind.domain.model.MovieDetail
 
 class MovieRepository(private val apiService: ApiService) {
+
     suspend fun getPopularMovies(): List<Movie> {
         return apiService.getPopularMovies().results
     }
 
-    suspend fun getMoviesByGenres(genreIds: String): List<Movie> {
+    suspend fun getTrendingMovies(): List<Movie> { // 🔥 Em Alta
+        return apiService.getTrendingMovies().results
+    }
+
+    suspend fun getTopRatedMovies(): List<Movie> { // ⭐ Melhores Avaliados
+        return apiService.getTopRatedMovies().results
+    }
+
+    suspend fun getLatestMovies(): List<Movie> { // 🎞️ Lançamentos
+        return apiService.getLatestMovies().results
+    }
+
+    suspend fun getMoviesByGenres(genreIds: String): List<Movie> { // 🎬 Recomendações
         return apiService.getMoviesByGenres(genreIds).results
     }
 
@@ -17,7 +30,7 @@ class MovieRepository(private val apiService: ApiService) {
         return apiService.getMovieDetail(movieId)
     }
 
-    suspend fun searchMovies(query: String): List<Movie> {
+    suspend fun searchMovies(query: String): List<Movie> { // 🔍 Busca
         return apiService.searchMovies(query).results
     }
 }

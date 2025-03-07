@@ -16,25 +16,37 @@ class HomeViewModel(
     private val userPreferencesDataStore: UserPreferencesDataStore
 ) : ViewModel() {
 
-    private val _movies = MutableStateFlow<List<Movie>>(emptyList())
-    val movies: StateFlow<List<Movie>> = _movies
+    private val _trendingMovies = MutableStateFlow<List<Movie>>(emptyList()) // 🔥 Em Alta
+    val trendingMovies: StateFlow<List<Movie>> = _trendingMovies
 
-    private val _searchResults = MutableStateFlow<List<Movie>>(emptyList())
+    private val _topRatedMovies = MutableStateFlow<List<Movie>>(emptyList()) // ⭐ Melhores Avaliados
+    val topRatedMovies: StateFlow<List<Movie>> = _topRatedMovies
+
+    private val _latestMovies = MutableStateFlow<List<Movie>>(emptyList()) // 🎞️ Lançamentos
+    val latestMovies: StateFlow<List<Movie>> = _latestMovies
+
+    private val _recommendedMovies = MutableStateFlow<List<Movie>>(emptyList()) // 🎬 Recomendações
+    val recommendedMovies: StateFlow<List<Movie>> = _recommendedMovies
+
+    private val _searchResults = MutableStateFlow<List<Movie>>(emptyList()) // 🔍 Busca
     val searchResults: StateFlow<List<Movie>> = _searchResults
 
     init {
-        fetchMoviesByUserPreferences()
+        fetchMovies()
     }
 
-    private fun fetchMoviesByUserPreferences() {
+    private fun fetchMovies() {
         viewModelScope.launch {
             try {
+                _trendingMovies.value = repository.getTrendingMovies()
+                _topRatedMovies.value = repository.getTopRatedMovies()
+                _latestMovies.value = repository.getLatestMovies()
+
+                // Busca as recomendações com base nos gêneros favoritos do usuário
                 userPreferencesDataStore.favoriteGenres.collect { genres ->
-                    if (genres.isEmpty()) {
-                        _movies.value = repository.getPopularMovies()
-                    } else {
+                    if (genres.isNotEmpty()) {
                         val genreIds = genres.joinToString(",") { getGenreIdByName(it) }
-                        _movies.value = repository.getMoviesByGenres(genreIds)
+                        _recommendedMovies.value = repository.getMoviesByGenres(genreIds)
                     }
                 }
             } catch (e: Exception) {
@@ -60,3 +72,4 @@ class HomeViewModel(
         return genreMap[genreName] ?: ""
     }
 }
+

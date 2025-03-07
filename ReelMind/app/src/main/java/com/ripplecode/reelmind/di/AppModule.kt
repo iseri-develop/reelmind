@@ -1,13 +1,12 @@
 package com.ripplecode.reelmind.di
 
-import com.google.firebase.auth.FirebaseAuth
 import com.ripplecode.reelmind.data.remote.ApiService
 import com.ripplecode.reelmind.data.remote.AuthInterceptor
-import com.ripplecode.reelmind.data.repository.AuthRepository
+import com.ripplecode.reelmind.data.repository.FavoriteMovieRepository
 import com.ripplecode.reelmind.data.repository.MovieRepository
 import com.ripplecode.reelmind.data.store.UserPreferencesDataStore
-import com.ripplecode.reelmind.presentation.viewmodel.AuthViewModel
 import com.ripplecode.reelmind.presentation.viewmodel.DetailViewModel
+import com.ripplecode.reelmind.presentation.viewmodel.FavoriteMovieViewModel
 import com.ripplecode.reelmind.presentation.viewmodel.HomeViewModel
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
@@ -17,7 +16,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 val appModule = module {
-    single { UserPreferencesDataStore(get()) }
+    single { UserPreferencesDataStore(androidContext()) }
 
     // Criando uma única instância do OkHttpClient
     single {
@@ -36,16 +35,12 @@ val appModule = module {
             .create(ApiService::class.java) // Cria a instância do ApiService
     }
 
+    //repositorios
     single { MovieRepository(get()) }
+    single { FavoriteMovieRepository(get()) }
+
+    //viewModels
     viewModel { HomeViewModel(get(), get()) }
     viewModel { DetailViewModel(get()) }
-
-    // 🔹 Adicionando FirebaseAuth
-    single { FirebaseAuth.getInstance() }
-
-    // 🔹 Passando FirebaseAuth e Context corretamente para AuthRepository
-    single { AuthRepository(get(), androidContext()) }
-    viewModel { AuthViewModel(get()) }
-
-    single { UserPreferencesDataStore(androidContext()) }
+    viewModel { FavoriteMovieViewModel(get()) }
 }

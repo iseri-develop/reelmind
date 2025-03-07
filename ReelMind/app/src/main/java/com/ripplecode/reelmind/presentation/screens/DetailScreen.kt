@@ -35,22 +35,28 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import coil.compose.rememberAsyncImagePainter
+import com.ripplecode.reelmind.data.repository.FavoriteMovieRepository
+import com.ripplecode.reelmind.domain.model.FavoriteMovie
 import com.ripplecode.reelmind.presentation.viewmodel.DetailViewModel
-import com.ripplecode.reelmind.presentation.viewmodel.HomeViewModel
+import com.ripplecode.reelmind.presentation.viewmodel.FavoriteMovieViewModel
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 @Composable
 fun DetailScreen(
     movieId: Int,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    favoriteMovieViewModel: FavoriteMovieViewModel = koinViewModel()
 ) {
     val viewModel: DetailViewModel = koinViewModel(parameters = { parametersOf(movieId) })
     val movieDetail by viewModel.movieDetail.collectAsState()
+    val isFavorite by favoriteMovieViewModel.isFavorite(movieId).collectAsState()
 
+    // Verificar se o filme já está favoritado
     LaunchedEffect(movieId) {
         viewModel.fetchMovieDetail(movieId)
     }
@@ -103,13 +109,24 @@ fun DetailScreen(
                     Spacer(modifier = Modifier.height(16.dp))
 
                     // Botão de Favoritar
-                    var isFavorite by remember { mutableStateOf(false) }
-                    IconButton(
-                        onClick = { isFavorite = !isFavorite }
-                    ) {
+                    IconButton(onClick = {
+                        if (isFavorite) {
+                            favoriteMovieViewModel.removeFromFavorites(movie.id)
+                        } else {
+                            favoriteMovieViewModel.addToFavorites(
+                                FavoriteMovie(
+                                    id = movie.id,
+                                    title = movie.title,
+                                    posterPath = movie.posterPath,
+                                    voteAverage = movie.voteAverage,
+                                    overview = movie.overview
+                                )
+                            )
+                        }
+                    }) {
                         Icon(
-                            imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-                            contentDescription = "Favoritar",
+                            imageVector = Icons.Default.Favorite,
+                            contentDescription = "Favorite",
                             tint = if (isFavorite) Color.Red else Color.Gray
                         )
                     }
@@ -137,4 +154,3 @@ fun DetailScreen(
         }
     }
 }
-
