@@ -4,10 +4,12 @@ import com.ripplecode.reelmind.data.remote.ApiService
 import com.ripplecode.reelmind.data.remote.AuthInterceptor
 import com.ripplecode.reelmind.data.repository.FavoriteMovieRepository
 import com.ripplecode.reelmind.data.repository.MovieRepository
+import com.ripplecode.reelmind.data.repository.WatchedMovieRepository
 import com.ripplecode.reelmind.data.store.UserPreferencesDataStore
 import com.ripplecode.reelmind.presentation.viewmodel.DetailViewModel
 import com.ripplecode.reelmind.presentation.viewmodel.FavoriteMovieViewModel
 import com.ripplecode.reelmind.presentation.viewmodel.HomeViewModel
+import com.ripplecode.reelmind.presentation.viewmodel.WatchedMovieViewModel
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -38,9 +40,11 @@ val appModule = module {
     //repositorios
     single { MovieRepository(get()) }
     single { FavoriteMovieRepository(get()) }
+    single { WatchedMovieRepository(get()) }
 
     //viewModels
     viewModel { HomeViewModel(get(), get()) }
     viewModel { DetailViewModel(get()) }
     viewModel { FavoriteMovieViewModel(get()) }
+    viewModel { WatchedMovieViewModel(get()) }
 }

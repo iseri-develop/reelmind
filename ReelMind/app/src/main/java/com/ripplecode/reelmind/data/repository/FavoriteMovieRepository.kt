@@ -18,7 +18,5 @@ open class FavoriteMovieRepository(private val favoriteMovieDao: FavoriteMovieDa
         favoriteMovieDao.deleteFavorite(movieId)
     }
 
-    suspend fun isFavorite(movieId: Int): Boolean {
-        return favoriteMovieDao.isFavorite(movieId)
-    }
+    fun isFavorite(movieId: Int): Flow<Boolean> = favoriteMovieDao.isFavorite(movieId)
 }

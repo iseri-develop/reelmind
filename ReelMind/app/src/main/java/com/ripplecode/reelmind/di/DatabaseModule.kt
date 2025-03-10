@@ -4,11 +4,13 @@ import android.content.Context
 import androidx.room.Room
 import com.ripplecode.reelmind.data.local.AppDatabase
 import com.ripplecode.reelmind.data.local.FavoriteMovieDao
+import com.ripplecode.reelmind.data.local.WatchedMovieDao
 import org.koin.dsl.module
 
 val databaseModule = module {
     single { provideDatabase(get()) }
     single { provideFavoriteMovieDao(get()) }
+    single { provideWatchedMovieDao(get()) }
 }
 
 fun provideDatabase(context: Context): AppDatabase {
@@ -22,4 +24,8 @@ fun provideDatabase(context: Context): AppDatabase {
 
 fun provideFavoriteMovieDao(database: AppDatabase): FavoriteMovieDao {
     return database.favoriteMovieDao()
+}
+
+fun provideWatchedMovieDao(database: AppDatabase): WatchedMovieDao {
+    return database.watchedMovieDao()
 }

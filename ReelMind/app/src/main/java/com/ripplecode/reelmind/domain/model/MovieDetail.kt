@@ -10,7 +10,9 @@ data class MovieDetail(
     @SerializedName("backdrop_path") val backdropPath: String,
     @SerializedName("vote_average") val voteAverage: Double,
     val genres: List<Genre>,  // 🔄 Agora espera uma lista de objetos `Genre`
-    val runtime: Int
+    val runtime: Int,
+    val trailerUrl: String,
+    val streamingProviders: List<StreamingPlatform> // Adicionando plataformas
 )
 
 data class Genre(

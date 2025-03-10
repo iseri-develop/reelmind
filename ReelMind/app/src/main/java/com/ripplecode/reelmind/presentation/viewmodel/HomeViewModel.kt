@@ -6,10 +6,13 @@ import androidx.lifecycle.viewModelScope
 import com.ripplecode.reelmind.data.repository.MovieRepository
 import com.ripplecode.reelmind.data.store.UserPreferencesDataStore
 import com.ripplecode.reelmind.domain.model.Movie
-import com.ripplecode.reelmind.domain.model.MovieDetail
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 class HomeViewModel(
     private val repository: MovieRepository,
@@ -38,15 +41,19 @@ class HomeViewModel(
     private fun fetchMovies() {
         viewModelScope.launch {
             try {
-                _trendingMovies.value = repository.getTrendingMovies()
-                _topRatedMovies.value = repository.getTopRatedMovies()
-                _latestMovies.value = repository.getLatestMovies()
-
                 // Busca as recomendações com base nos gêneros favoritos do usuário
                 userPreferencesDataStore.favoriteGenres.collect { genres ->
                     if (genres.isNotEmpty()) {
                         val genreIds = genres.joinToString(",") { getGenreIdByName(it) }
+                        val listGenreId = genres.map { getGenreIdByName(it).toInt() }
+
                         _recommendedMovies.value = repository.getMoviesByGenres(genreIds)
+
+                        _trendingMovies.value = repository.getTrendingMoviesByGenres(listGenreId)
+                        _topRatedMovies.value = repository.getTopRatedMoviesByGenres(listGenreId)
+                        _latestMovies.value = repository.getNowPlayingMoviesByGenres(listGenreId,
+                            minDate = getOneMonthAgoDate(),
+                            maxDate = getCurrentDate())
                     }
                 }
             } catch (e: Exception) {
@@ -70,6 +77,18 @@ class HomeViewModel(
             "Ficção Científica" to "878"
         )
         return genreMap[genreName] ?: ""
+    }
+
+    private fun getCurrentDate(): String {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        return dateFormat.format(Date())
+    }
+
+    private fun getOneMonthAgoDate(): String {
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.MONTH, -1) // Volta um mês
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        return dateFormat.format(calendar.time)
     }
 }
 

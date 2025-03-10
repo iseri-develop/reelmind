@@ -20,8 +20,9 @@ fun AppNavigation(userPreferencesDataStore: UserPreferencesDataStore = get()) {
     val navController = rememberNavController()
     val genres by userPreferencesDataStore.favoriteGenres.collectAsState(initial = emptySet())
 
-    NavHost(navController = navController, startDestination = "onboarding") {
-        // Onboarding Screen
+    val startDestination = if (genres.isEmpty()) "onboarding" else "home"
+
+    NavHost(navController = navController, startDestination = startDestination) {
         composable("onboarding") {
             OnboardingScreen(
                 navController = navController,
@@ -33,7 +34,6 @@ fun AppNavigation(userPreferencesDataStore: UserPreferencesDataStore = get()) {
             )
         }
 
-        // Home Screen
         composable("home") {
             var selectedMovieId by remember { mutableStateOf<Int?>(null) }
 

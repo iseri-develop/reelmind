@@ -130,17 +130,3 @@ fun GenreItem(genre: String, isSelected: Boolean, onSelect: (Boolean) -> Unit) {
         }
     }
 }
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewOnboardingScreen() {
-    val fakeNavController = rememberNavController()
-
-    OnboardingScreen(navController = fakeNavController)
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewGenreItem() {
-    GenreItem(genre = "Ação", isSelected = true, onSelect = {})
-}

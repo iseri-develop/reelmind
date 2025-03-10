@@ -14,7 +14,17 @@ class DetailViewModel (private val repository: MovieRepository) : ViewModel() {
 
     fun fetchMovieDetail(movieId: Int) {
         viewModelScope.launch {
-            _movieDetail.value = repository.getMovieDetail(movieId)
+            val movie = repository.getMovieDetail(movieId)
+            val videos = repository.getMovieVideos(movieId)
+            val providers = repository.getMovieProviders(movieId)
+
+            val trailer = videos.firstOrNull { it.site == "YouTube" && it.type == "Trailer" }
+            val trailerUrl = trailer?.key.let { "https://www.youtube.com/watch?v=$it" }
+
+            _movieDetail.value = movie.copy(
+                trailerUrl = trailerUrl,
+                streamingProviders = providers
+            )
         }
     }
 
