@@ -9,6 +9,7 @@ import com.ripplecode.reelmind.data.store.UserPreferencesDataStore
 import com.ripplecode.reelmind.presentation.viewmodel.DetailViewModel
 import com.ripplecode.reelmind.presentation.viewmodel.FavoriteMovieViewModel
 import com.ripplecode.reelmind.presentation.viewmodel.HomeViewModel
+import com.ripplecode.reelmind.presentation.viewmodel.ProfileViewModel
 import com.ripplecode.reelmind.presentation.viewmodel.WatchedMovieViewModel
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
@@ -47,4 +48,5 @@ val appModule = module {
     viewModel { DetailViewModel(get()) }
     viewModel { FavoriteMovieViewModel(get()) }
     viewModel { WatchedMovieViewModel(get()) }
+    viewModel { ProfileViewModel(get(), get()) }
 }

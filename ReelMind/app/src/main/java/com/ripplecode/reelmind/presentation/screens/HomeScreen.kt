@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -32,7 +31,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,12 +39,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -60,7 +56,6 @@ import org.koin.androidx.compose.koinViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    genres: Set<String>,
     viewModel: HomeViewModel = koinViewModel(),
     detailViewModel: DetailViewModel = koinViewModel(),
     onMovieClick: (Movie) -> Unit
@@ -72,7 +67,6 @@ fun HomeScreen(
 
     val searchResults by viewModel.searchResults.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
-    var selectedMovieId by remember { mutableStateOf<Int?>(null) }
 
     Scaffold(
         topBar = {
@@ -123,7 +117,7 @@ fun HomeScreen(
                     MovieItem(movie = movie,
                         onMovieClick = {
                             detailViewModel.clearMovieDetail()
-                            selectedMovieId = movie.id
+                            onMovieClick(movie)
                         })
                 }
             } else {
@@ -132,7 +126,7 @@ fun HomeScreen(
                     MovieBanner(movies = trendingMovies,
                         onMovieClick = {
                             detailViewModel.clearMovieDetail()
-                            selectedMovieId = it.id
+                            onMovieClick(it)
                         })
                 }
                 item {
@@ -141,7 +135,7 @@ fun HomeScreen(
                         movies = recommendedMovies,
                         onMovieClick = {
                             detailViewModel.clearMovieDetail()
-                            selectedMovieId = it.id
+                            onMovieClick(it)
                         }
                     )
                 }
@@ -151,7 +145,7 @@ fun HomeScreen(
                         movies = topRatedMovies,
                         onMovieClick = {
                             detailViewModel.clearMovieDetail()
-                            selectedMovieId = it.id
+                            onMovieClick(it)
                         }
                     )
                 }
@@ -160,47 +154,46 @@ fun HomeScreen(
                         movies = latestMovies,
                         onMovieClick = {
                             detailViewModel.clearMovieDetail()
-                            selectedMovieId = it.id
-                        })
+                            onMovieClick(it)
+                        }
+                    )
                 }
             }
         }
-    }
-
-    selectedMovieId?.let { movieId ->
-        DetailScreen(movieId = movieId, onDismiss = { selectedMovieId = null })
     }
 }
 
 // 🔥 Destaque maior para "Em Alta"
 @Composable
 fun MovieBanner(movies: List<Movie>, onMovieClick: (Movie) -> Unit) {
-    Text(
-        text = "Em Alta",
-        style = MaterialTheme.typography.titleLarge,
-        modifier = Modifier.padding(8.dp)
-    )
+    Column(modifier = Modifier.padding(8.dp)) {
+        Text(
+            text = "Em Alta",
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier.padding(8.dp)
+        )
 
-    LazyRow(modifier = Modifier.fillMaxWidth()) {
-        items(movies) { movie ->
-            Box(
-                modifier = Modifier
-                    .width(200.dp) // Defina um tamanho fixo para os banners
-                    .height(300.dp) // Defina um tamanho fixo para os banners
+        LazyRow(modifier = Modifier.fillMaxWidth()) {
+            items(movies) { movie ->
+                Box(
+                    modifier = Modifier
+                        .width(200.dp) // Defina um tamanho fixo para os banners
+                        .height(300.dp) // Defina um tamanho fixo para os banners
 //                    .aspectRatio(16f / 9f) // Mantém a proporção correta
-                    .padding(8.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .clickable { onMovieClick(movie) }
-            ) {
-                val imageUrl = "https://image.tmdb.org/t/p/w500${movie.posterPath}"
-                Log.d("MovieImage", "URL da imagem: $imageUrl") // 🔥 Debug da URL
+                        .padding(4.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .clickable { onMovieClick(movie) }
+                ) {
+                    val imageUrl = "https://image.tmdb.org/t/p/w500${movie.posterPath}"
+                    Log.d("MovieImage", "URL da imagem: $imageUrl") // 🔥 Debug da URL
 
-                AsyncImage(
-                    model = imageUrl,
-                    contentDescription = movie.title,
-                    contentScale = ContentScale.Crop, // Ajusta a imagem sem distorcer
-                    modifier = Modifier.fillMaxSize()
-                )
+                    AsyncImage(
+                        model = imageUrl,
+                        contentDescription = movie.title,
+                        contentScale = ContentScale.Crop, // Ajusta a imagem sem distorcer
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
             }
         }
     }
@@ -256,11 +249,6 @@ fun MovieCard(movie: Movie, onMovieClick: (Movie) -> Unit) {
             maxLines = 1, // Evita que títulos longos quebrem o layout
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.padding(top = 4.dp)
-        )
-        Text(
-            text = "Nota: ${movie.voteAverage}",
-            fontSize = 12.sp,
-            color = Color.Gray
         )
     }
 }

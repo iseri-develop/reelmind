@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 open class FavoriteMovieRepository(private val favoriteMovieDao: FavoriteMovieDao) {
 
-    open fun getAllFavorites(): Flow<List<FavoriteMovie>> {
+    fun getAllFavorites(): Flow<List<FavoriteMovie>> {
         return favoriteMovieDao.getAllFavorites()
     }
 

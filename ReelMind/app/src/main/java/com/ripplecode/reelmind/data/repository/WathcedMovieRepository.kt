@@ -16,4 +16,8 @@ class WatchedMovieRepository(private val dao: WatchedMovieDao) {
     suspend fun removeFromWatched(movie: WatchedMovie) {
         dao.delete(movie)
     }
+
+    fun getAllWatched(): Flow<List<WatchedMovie>> {
+        return watchedMovies
+    }
 }
