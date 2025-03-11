@@ -13,4 +13,10 @@ data class Movie(
     @SerializedName("vote_average") val voteAverage: Float,
     @SerializedName("overview") val overview: String,
     @SerializedName("genre_ids") val genreIds: List<Int>
-)
+) {
+    companion object {
+        fun empty(): Movie {
+            return Movie(0, "", null, 0f, "", emptyList())
+        }
+    }
+}

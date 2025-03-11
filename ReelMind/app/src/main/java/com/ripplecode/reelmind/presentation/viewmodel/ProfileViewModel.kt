@@ -9,6 +9,6 @@ class ProfileViewModel(
     watchedRepository: WatchedMovieRepository
 ) : ViewModel() {
 
-    val favoriteMovies = favoriteRepository.getAllFavorites()
-    val watchedMovies = watchedRepository.getAllWatched()
+    val favoriteMovies = favoriteRepository.getAllFavoritesListMovie()
+    val watchedMovies = watchedRepository.getAllWatchedListMovie()
 }

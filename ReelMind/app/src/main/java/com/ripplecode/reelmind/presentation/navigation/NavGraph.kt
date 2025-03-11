@@ -16,6 +16,7 @@ import androidx.navigation.compose.rememberNavController
 import com.ripplecode.reelmind.data.store.UserPreferencesDataStore
 import com.ripplecode.reelmind.presentation.screens.DetailScreen
 import com.ripplecode.reelmind.presentation.screens.HomeScreen
+import com.ripplecode.reelmind.presentation.screens.MovieRouletteScreen
 import com.ripplecode.reelmind.presentation.screens.OnboardingScreen
 import com.ripplecode.reelmind.ui.components.BottomNavigationBar
 import org.koin.androidx.compose.get
@@ -55,6 +56,21 @@ fun AppNavigation(userPreferencesDataStore: UserPreferencesDataStore = get()) {
 
                 HomeScreen(
                     onMovieClick = { movie -> selectedMovieId = movie.id }
+                )
+
+                selectedMovieId?.let { movieId ->
+                    DetailScreen(
+                        movieId = movieId,
+                        onDismiss = { selectedMovieId = null }
+                    )
+                }
+            }
+
+            composable("roulette") {
+                var selectedMovieId by remember { mutableStateOf<Int?>(null) }
+
+                MovieRouletteScreen(
+                    onMovieSelected = { movie -> selectedMovieId = movie.id }
                 )
 
                 selectedMovieId?.let { movieId ->

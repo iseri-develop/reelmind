@@ -42,27 +42,6 @@ fun ProfileScreen(
 ) {
     val favorites by viewModel.favoriteMovies.collectAsState(initial = emptyList())
     val watcheds by viewModel.watchedMovies.collectAsState(initial = emptyList())
-    val listFavoriteMovies = favorites.map { favorite ->
-        Movie(
-            id = favorite.id,
-            title = favorite.title,
-            posterPath = favorite.posterPath,
-            voteAverage = favorite.voteAverage.toFloat(),
-            overview = favorite.overview,
-            genreIds = emptyList()
-        )
-    }
-
-    val listWatchedMovies = watcheds.map { watched ->
-        Movie(
-            id = watched.id,
-            title = watched.title,
-            posterPath = watched.posterPath,
-            voteAverage = watched.voteAverage.toFloat(),
-            overview = watched.overview,
-            genreIds = emptyList()
-        )
-    }
 
     Column(
         modifier = Modifier
@@ -77,8 +56,8 @@ fun ProfileScreen(
         )
 
 
-        Section(title = "Filmes Favoritos", movies = listFavoriteMovies, onMovieClick = onMovieClick)
-        Section(title = "Filmes Assistidos", movies = listWatchedMovies, onMovieClick = onMovieClick)
+        Section(title = "Filmes Favoritos", movies = favorites, onMovieClick = onMovieClick)
+        Section(title = "Filmes Assistidos", movies = watcheds, onMovieClick = onMovieClick)
 
         Spacer(modifier = Modifier.height(24.dp))
 

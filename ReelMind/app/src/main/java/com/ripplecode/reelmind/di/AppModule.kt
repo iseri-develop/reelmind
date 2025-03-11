@@ -9,6 +9,7 @@ import com.ripplecode.reelmind.data.store.UserPreferencesDataStore
 import com.ripplecode.reelmind.presentation.viewmodel.DetailViewModel
 import com.ripplecode.reelmind.presentation.viewmodel.FavoriteMovieViewModel
 import com.ripplecode.reelmind.presentation.viewmodel.HomeViewModel
+import com.ripplecode.reelmind.presentation.viewmodel.MovieRouletteViewModel
 import com.ripplecode.reelmind.presentation.viewmodel.ProfileViewModel
 import com.ripplecode.reelmind.presentation.viewmodel.WatchedMovieViewModel
 import okhttp3.OkHttpClient
@@ -39,7 +40,7 @@ val appModule = module {
     }
 
     //repositorios
-    single { MovieRepository(get()) }
+    single { MovieRepository(get(), get(), get()) }
     single { FavoriteMovieRepository(get()) }
     single { WatchedMovieRepository(get()) }
 
@@ -49,4 +50,5 @@ val appModule = module {
     viewModel { FavoriteMovieViewModel(get()) }
     viewModel { WatchedMovieViewModel(get()) }
     viewModel { ProfileViewModel(get(), get()) }
+    viewModel { MovieRouletteViewModel(get(), get()) }
 }

@@ -5,7 +5,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -30,6 +30,16 @@ fun BottomNavigationBar(navController: NavController) {
             onClick = {
                 navController.navigate("home") {
                     popUpTo("home") { inclusive = true }
+                }
+            }
+        )
+
+        NavigationBarItem(
+            icon = { Icon(Icons.Default.Star, contentDescription = "Roulette") },
+            selected = currentDestination == "roulette",
+            onClick = {
+                navController.navigate("roulette") {
+                    popUpTo("roulette") { inclusive = true }
                 }
             }
         )

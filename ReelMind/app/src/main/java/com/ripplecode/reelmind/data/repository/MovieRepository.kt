@@ -1,15 +1,18 @@
 package com.ripplecode.reelmind.data.repository
 
-import com.ripplecode.reelmind.data.local.MovieDao
-import com.ripplecode.reelmind.domain.model.Movie
 import com.ripplecode.reelmind.data.remote.ApiService
+import com.ripplecode.reelmind.domain.model.Movie
 import com.ripplecode.reelmind.domain.model.MovieDetail
-import com.ripplecode.reelmind.domain.model.MovieVideo
 import com.ripplecode.reelmind.domain.model.MovieVideoResult
 import com.ripplecode.reelmind.domain.model.StreamingPlatform
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 
-class MovieRepository(private val apiService: ApiService) {
+class MovieRepository(
+    private val apiService: ApiService,
+    private val favoriteRepository: FavoriteMovieRepository,
+    private val watchedRepository: WatchedMovieRepository
+) {
 
     suspend fun getPopularMovies(): List<Movie> {
         return apiService.getPopularMovies().results
@@ -56,6 +59,23 @@ class MovieRepository(private val apiService: ApiService) {
 
     suspend fun searchMovies(query: String): List<Movie> { // 🔍 Busca
         return apiService.searchMovies(query).results
+    }
+
+    suspend fun getMoviesForRoulette(selectedGenres: List<Int>): List<Movie> {
+//        val favoriteMovies = favoriteRepository.getAllFavoritesListMovie().first()
+//        val watchedMovies = watchedRepository.getAllWatchedListMovie().first()
+//
+//        val combinedMovies = (favoriteMovies + watchedMovies).distinct()
+//
+//        return if (combinedMovies.size >= 5) {
+//            combinedMovies.shuffled().take(5) // Pega 5 aleatórios se houver suficientes
+//        } else {
+//            val recommendedMovies = apiService.getMoviesByGenres(selectedGenres.joinToString(",")).results
+//            (combinedMovies + recommendedMovies).distinct().shuffled().take(5)
+//        }
+
+        return apiService.getMoviesByGenres(selectedGenres.joinToString(",")).results.shuffled()
+            .take(5)
     }
 
     suspend fun getMovieVideos(movieId: Int): List<MovieVideoResult> {
