@@ -67,4 +67,4 @@ Testes unitários foram aplicados na camada de ViewModel com uso de:
 
 ## 👨‍💻 Autor
 
-Desenvolvido por [Seu Nome Aqui] — 💬 Focado em desenvolvimento Android com paixão por boas práticas e experiência do usuário.
+Desenvolvido por Igor Isaeri — 💬 Focado em desenvolvimento Android com paixão por boas práticas e experiência do usuário.
