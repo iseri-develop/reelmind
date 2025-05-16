@@ -45,13 +45,6 @@ com.reelmind
 - Programação assíncrona com coroutines e Dispatchers adequados (`IO`, `Main`)
 - Coleta de estados reativos na UI com `collectAsState`
 
-## 🧪 Testes
-
-Testes unitários foram aplicados na camada de ViewModel com uso de:
-- `JUnit` para estrutura de testes
-- `MockK` para mock de dependências
-- `Turbine` (opcional) para testar fluxos do `StateFlow`
-
 ## 📱 Requisitos
 
 - Android Studio Flamingo ou superior
@@ -64,6 +57,10 @@ Testes unitários foram aplicados na camada de ViewModel com uso de:
 - Filtro por gênero
 - Armazenamento local com Room
 - Dark mode
+- Testes unitários foram aplicados na camada de ViewModel com uso de:
+- `JUnit` para estrutura de testes
+- `MockK` para mock de dependências
+- `Turbine` (opcional) para testar fluxos do `StateFlow`
 
 ## 👨‍💻 Autor
 
